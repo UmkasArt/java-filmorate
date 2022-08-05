@@ -19,7 +19,7 @@ class UserControllerTest {
 
     @BeforeEach
     void createVarsForTests() {
-        user = new User(1, "ololol@ya.ru", "login", "name", LocalDate.of(2022, 8, 6));
+        user = new User(1, "ololol@ya.ru", "login", "name", LocalDate.of(2000, 1, 1));
         userController = new UserController();
     }
 
