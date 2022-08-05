@@ -28,9 +28,7 @@ public class UserController {
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         log.debug("Пользователь: {}", user);
-        if (!isValidUser(user)) {
-            throw new ValidationException();
-        }
+        isValidUser(user);
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
@@ -44,21 +42,18 @@ public class UserController {
     @PutMapping
     public User put(@Valid @RequestBody User user) {
         log.debug("Пользователь: {}", user);
-        if (!isValidUser(user)) {
-            throw new ValidationException();
-        }
+        isValidUser(user);
         if(users.get(user.getId()) == null) {
-            throw new ValidationException();
+            throw new ValidationException("Пользователь не найден");
         }
         users.put(user.getId(), user);
         return user;
     }
 
-    boolean isValidUser(User user) {
+    void isValidUser(User user) {
         if (user.getBirthday().isAfter(TODAY_DATE)) {
-            return false;
+            throw new ValidationException("Невалидная дата рождения");
         }
-        return true;
     }
 
 
