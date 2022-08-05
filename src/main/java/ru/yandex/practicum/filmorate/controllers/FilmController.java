@@ -18,6 +18,7 @@ public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
     final static int MAX_DESC_SIZE = 200;
     final static LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+    private static int generator = 0;
 
     @GetMapping
     public Collection<Film> findAll() {
@@ -30,6 +31,9 @@ public class FilmController {
         log.debug("Фильм: {}", film);
         if (!isValidFilm(film)) {
             throw new ValidationException();
+        }
+        if (film.getId() == 0) {
+            film.setId(++generator);
         }
         films.put(film.getId(), film);
         return film;

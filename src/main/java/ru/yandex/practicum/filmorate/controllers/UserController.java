@@ -17,6 +17,7 @@ public class UserController {
 
     private final Map<Integer, User> users = new HashMap();
     private static final LocalDate TODAY_DATE= LocalDate.now();
+    private static int generator = 0;
 
     @GetMapping
     public java.util.Collection<User> findAll() {
@@ -32,6 +33,9 @@ public class UserController {
         }
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());
+        }
+        if (user.getId() == 0) {
+            user.setId(++generator);
         }
         users.put(user.getId(), user);
         return user;
