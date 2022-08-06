@@ -7,8 +7,11 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -20,9 +23,9 @@ public class UserController {
     private static int generator = 0;
 
     @GetMapping
-    public java.util.Collection<User> findAll() {
+    public List<User> findAll() {
         log.debug("Текущее количество постов: {}", users.size());
-        return users.values();
+        return new ArrayList<>(users.values());
     }
 
     @PostMapping
