@@ -7,9 +7,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -21,9 +20,9 @@ public class FilmController {
     private static int generator = 0;
 
     @GetMapping
-    public Collection<Film> findAll() {
+    public List<Film> findAll() {
         log.debug("Текущее количество постов: {}", films.size());
-        return films.values();
+        return new ArrayList<>(films.values());
     }
 
     @PostMapping
