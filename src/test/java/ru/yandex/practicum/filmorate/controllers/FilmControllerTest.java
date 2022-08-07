@@ -15,7 +15,7 @@ class FilmControllerTest {
     protected FilmController filmController;
 
     @BeforeEach
-    void createVarsForTests() {
+    void setUp() {
         film = new Film(1, "name",
                 "Desc",
                 LocalDate.of(2020, 8, 3), 100);
@@ -26,18 +26,18 @@ class FilmControllerTest {
     void testOk() {
         assertDoesNotThrow(() -> filmController.isValidFilm(film));
     }
+
     @Test
-    void testNotValidDesc() {
+    void testNotValidLengthDesc() {
         film.setDescription("f".repeat(201));
         final ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> filmController.isValidFilm(film))
-        ;
+                () -> filmController.isValidFilm(film));
         assertEquals("Длина описания больше 200 символов", exception.getMessage());
     }
 
     @Test
-    void testValidDesc() {
+    void testBoundaryLengthDesc() {
         film.setDescription("f".repeat(200));
         assertDoesNotThrow(() -> filmController.isValidFilm(film));
     }
@@ -45,15 +45,13 @@ class FilmControllerTest {
     @Test
     void testNotValidDate() {
         film.setReleaseDate(LocalDate.of(1895, 12, 27));
-        final ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> filmController.isValidFilm(film))
-                ;
+        final ValidationException exception = assertThrows(ValidationException.class,
+                () -> filmController.isValidFilm(film));
         assertEquals("Дата выхода фильма раньше дня рождения кино", exception.getMessage());
     }
 
     @Test
-    void testValidDate() {
+    void testBoundaryDate() {
         film.setReleaseDate(LocalDate.of(1895, 12, 28));
         assertDoesNotThrow(() -> filmController.isValidFilm(film));
     }
@@ -61,17 +59,14 @@ class FilmControllerTest {
     @Test
     void testNotValidDuration() {
         film.setDuration(0);
-        final ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> filmController.isValidFilm(film))
-                ;
+        final ValidationException exception = assertThrows(ValidationException.class,
+                () -> filmController.isValidFilm(film));
         assertEquals("Невалидная длительность", exception.getMessage());
     }
 
     @Test
-    void testValidDuration() {
+    void testBoundaryDuration() {
         film.setDuration(1);
         assertDoesNotThrow(() -> filmController.isValidFilm(film));
     }
 }
-

@@ -18,7 +18,7 @@ import java.util.Map;
 public class UserController {
 
     private final Map<Integer, User> users = new HashMap();
-    private static final LocalDate TODAY_DATE= LocalDate.now();
+    private static final LocalDate TODAY_DATE = LocalDate.now();
     private static int generator = 0;
 
     @GetMapping
@@ -45,7 +45,7 @@ public class UserController {
     public User put(@Valid @RequestBody User user) {
         log.debug("Пользователь: {}", user);
         isValidUser(user);
-        if(users.get(user.getId()) == null) {
+        if (users.get(user.getId()) == null) {
             throw new ValidationException("Пользователь не найден");
         }
         users.put(user.getId(), user);

@@ -17,7 +17,7 @@ class UserControllerTest {
     protected UserController userController;
 
     @BeforeEach
-    void createVarsForTests() {
+    void setUp() {
         user = new User(1, "ololol@ya.ru", "login", "name", LocalDate.of(2000, 1, 1));
         userController = new UserController();
     }
@@ -29,19 +29,16 @@ class UserControllerTest {
     }
 
     @Test
-     void testNotValidBirthday(){
+    void testNotValidBirthday() {
         user.setBirthday(LocalDate.now().plusDays(1));
-         final ValidationException exception = assertThrows(
-                 ValidationException.class,
-                 () -> userController.isValidUser(user))
-                 ;
-         assertEquals("Невалидная дата рождения", exception.getMessage());
+        final ValidationException exception = assertThrows(ValidationException.class,
+                () -> userController.isValidUser(user));
+        assertEquals("Невалидная дата рождения", exception.getMessage());
     }
 
     @Test
-    void testValidBirthday(){
+    void testBoundaryBirthday() {
         user.setBirthday(LocalDate.now());
         assertDoesNotThrow(() -> userController.isValidUser(user));
     }
 }
-
