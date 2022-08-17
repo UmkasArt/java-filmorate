@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controllers.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -16,6 +18,13 @@ import java.util.Map;
 @Slf4j
 @RequestMapping("/users")
 public class UserController {
+
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     private final Map<Integer, User> users = new HashMap();
     private static final LocalDate TODAY_DATE = LocalDate.now();

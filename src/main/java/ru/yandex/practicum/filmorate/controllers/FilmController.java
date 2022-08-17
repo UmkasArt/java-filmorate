@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controllers.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -16,6 +18,14 @@ import java.util.Map;
 @Slf4j
 @RequestMapping("/films")
 public class FilmController {
+
+    private final FilmService filmService;
+
+    @Autowired
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
+
     private final Map<Integer, Film> films = new HashMap<>();
     public static final int MAX_DESC_SIZE = 200;
     public static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);

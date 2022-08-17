@@ -19,7 +19,7 @@ class FilmControllerTest {
         film = new Film(1, "name",
                 "Desc",
                 LocalDate.of(2020, 8, 3), 100);
-        filmController = new FilmController();
+        filmController = new FilmController();//TODO Исправить конструктор
     }
 
     @Test
