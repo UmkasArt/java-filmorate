@@ -14,11 +14,8 @@ public class InMemoryUserStorage implements UserStorage {
     private static int generator = 0;
 
     @Override
-    public void put(int id, User user) {
-        if (users.get(user.getId()) == null) {
-            throw new ValidationException("Пользователь не найден");
-        }
-        users.put(user.getId(), user);
+    public Map<Integer, User> getUsers() {
+        return users;
     }
 
     @Override
@@ -28,6 +25,14 @@ public class InMemoryUserStorage implements UserStorage {
         }
         if (user.getId() == 0) {
             user.setId(++generator);
+        }
+        users.put(user.getId(), user);
+    }
+
+    @Override
+    public void put(int id, User user) {
+        if (users.get(user.getId()) == null) {
+            throw new ValidationException("Пользователь не найден");
         }
         users.put(user.getId(), user);
     }

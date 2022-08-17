@@ -14,6 +14,19 @@ public class InMemoryFilmStorage implements FilmStorage {
     private static int generator = 0;
 
     @Override
+    public Map<Integer, Film> getFilms() {
+        return films;
+    }
+
+    @Override
+    public void add(int id, Film film) {
+        if (film.getId() == 0) {
+            film.setId(++generator);
+        }
+        films.put(film.getId(), film);
+    }
+
+    @Override
     public void put(int id, Film film) {
         if (films.get(film.getId()) == null) {
             throw new ValidationException("Фильм не найден");
@@ -24,13 +37,5 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public void remove(int id) {
         films.remove(id);
-    }
-
-    @Override
-    public void add(int id, Film film) {
-        if (film.getId() == 0) {
-            film.setId(++generator);
-        }
-        films.put(film.getId(), film);
     }
 }
