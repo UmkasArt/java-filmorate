@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -23,9 +24,13 @@ public class UserService {
         this.inMemoryUserStorage = inMemoryUserStorage;
     }
 
-    public List<User> findAllUsers() {
+    public List<User> getAllUsers() {
         log.debug("Текущее количество постов: {}", inMemoryUserStorage.getUsers().size());
         return new ArrayList<>(inMemoryUserStorage.getUsers().values());
+    }
+
+    public Map<Integer, User> getUsersMap() {
+        return inMemoryUserStorage.getUsers();
     }
 
     public User create(User user) {

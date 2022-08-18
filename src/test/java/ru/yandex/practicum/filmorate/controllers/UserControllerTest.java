@@ -20,7 +20,7 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        user = new User(1, "ololol@ya.ru", "login", "name", LocalDate.of(2000, 1, 1));
+        //user = new User(1, "ololol@ya.ru", "login", "name", LocalDate.of(2000, 1, 1));
         userService = new UserService(new InMemoryUserStorage());
     }
 

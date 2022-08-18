@@ -6,6 +6,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,4 +25,12 @@ public class User {
     @Email
     String email;
     LocalDate birthday;
+    Set<Integer> friends;
+
+    public Set<Integer> getFriendsSet() {
+        if (this.friends == null) {
+            this.friends = new HashSet<>();
+        }
+        return this.friends;
+    }
 }
