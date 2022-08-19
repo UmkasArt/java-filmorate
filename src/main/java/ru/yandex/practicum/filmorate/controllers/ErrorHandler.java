@@ -22,6 +22,11 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public void handleIllegalArgumentException(final IllegalArgumentException e) {
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public void handleThrowable(final Throwable e) {
     }

@@ -1,11 +1,10 @@
-package ru.yandex.practicum.filmorate.controllers;
+package ru.yandex.practicum.filmorate.service.user;
 
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controllers.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import java.time.LocalDate;
@@ -13,7 +12,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class UserControllerTest {
+class UserServiceTest {
 
     protected User user;
     protected UserService userService;
@@ -27,20 +26,20 @@ class UserControllerTest {
 
     @Test
     void testOk() {
-        assertDoesNotThrow(() -> userService.isValidUser(user));
+        assertDoesNotThrow(() -> userService.validateUser(user));
     }
 
     @Test
     void testNotValidBirthday() {
         user.setBirthday(LocalDate.now().plusDays(1));
         final ValidationException exception = assertThrows(ValidationException.class,
-                () -> userService.isValidUser(user));
-        assertEquals("Невалидная дата рождения", exception.getMessage());
+                () -> userService.validateUser(user));
+        assertEquals("Invalid date of birth", exception.getMessage());
     }
 
     @Test
     void testBoundaryBirthday() {
         user.setBirthday(LocalDate.now());
-        assertDoesNotThrow(() -> userService.isValidUser(user));
+        assertDoesNotThrow(() -> userService.validateUser(user));
     }
 }

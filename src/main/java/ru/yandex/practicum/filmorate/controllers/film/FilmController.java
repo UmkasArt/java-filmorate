@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controllers;
+package ru.yandex.practicum.filmorate.controllers.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,34 +43,21 @@ public class FilmController {
 
     @GetMapping("/{filmId}")
     public Film findById(@PathVariable int filmId) {
-        if (!filmService.getFilmsMap().containsKey(filmId)) {
-            throw new NoSuchElementException();
-        }
-        return filmService.getFilmsMap().get(filmId);
+        return filmService.findFilmById(filmId);
     }
 
     @PutMapping("{id}/like/{userId}")
     public void putLike(@PathVariable int id, @PathVariable int userId) {
-        if (!filmService.getFilmsMap().containsKey(id) || userId <= 0) {
-            throw new NoSuchElementException();
-        }
-        filmService.getFilmsMap().get(id).getLikesSet().add(userId);
+        filmService.putLike(id, userId);
     }
 
     @DeleteMapping("{id}/like/{userId}")
     public void deleteLike(@PathVariable int id, @PathVariable int userId) {
-        if (!filmService.getFilmsMap().containsKey(id) || userId <= 0) {
-            throw new NoSuchElementException();
-        }
-        filmService.getFilmsMap().get(id).getLikesSet().remove(userId);
+        filmService.deleteLike(id, userId);
     }
 
     @GetMapping("/popular")
     public List<Film> getOrderFilms(@RequestParam(defaultValue = "10", required = false) Integer count) {
-        if (count <= 0) {
-            throw new ValidationException("Некорретный атрибут count");
-        }
-        return filmService.getAllFilms().stream().sorted((f0, f1) ->
-                f1.getLikesSet().size() - f0.getLikesSet().size()).limit(count).collect(Collectors.toList());
+        return filmService.getOrderFilm(count);
     }
 }

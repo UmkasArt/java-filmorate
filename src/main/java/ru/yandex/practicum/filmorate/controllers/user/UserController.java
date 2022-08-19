@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controllers;
+package ru.yandex.practicum.filmorate.controllers.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,51 +44,26 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public User findById(@PathVariable int userId) {
-        if (!userService.getUsersMap().containsKey(userId)) {
-            throw new NoSuchElementException();
-        }
-        return userService.getUsersMap().get(userId);
+        return userService.findUserById(userId);
     }
 
     @PutMapping("{id}/friends/{friendId}")
     public void addFriend(@PathVariable int id, @PathVariable int friendId) {
-        if (userService.getUsersMap().get(id) == null || userService.getUsersMap().get(friendId) == null) {
-            throw new NoSuchElementException();
-        }
-        userService.getUsersMap().get(id).getFriendsSet().add(friendId);
-        userService.getUsersMap().get(friendId).getFriendsSet().add(id);
+        userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable int id, @PathVariable int friendId) {
-        if (userService.getUsersMap().get(id) == null || userService.getUsersMap().get(friendId) == null) {
-            throw new NoSuchElementException();
-        }
-        userService.getUsersMap().get(id).getFriendsSet().remove(friendId);
-        userService.getUsersMap().get(friendId).getFriendsSet().remove(id);
+        userService.deleteFriend(id, friendId);
     }
 
     @GetMapping("{id}/friends")
     public List<User> getUserFriends(@PathVariable int id) {
-        if (userService.getUsersMap().get(id) == null) {
-            throw new NoSuchElementException();
-        }
-        return userService.getUsersMap().get(id).getFriendsSet()
-                .stream()
-                .map(friendId -> userService.getUsersMap().get(friendId))
-                .collect(Collectors.toList());
+        return userService.getUserFriend(id);
     }
 
     @GetMapping("{id}/friends/common/{otherId}")
     public List<User> getCommonFriends(@PathVariable int id, @PathVariable int otherId) {
-        List<User> commonFriends = new ArrayList<>();
-        for (Integer userId : userService.getUsersMap().get(id).getFriendsSet()) {
-            for (Integer otherUserId : userService.getUsersMap().get(otherId).getFriendsSet()) {
-                if (Objects.equals(userId, otherUserId)) {
-                    commonFriends.add(userService.getUsersMap().get(userId));
-                }
-            }
-        }
-        return commonFriends;
+        return userService.getCommonFriends(id, otherId);
     }
 }

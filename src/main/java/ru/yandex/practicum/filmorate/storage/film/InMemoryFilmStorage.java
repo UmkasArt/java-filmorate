@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controllers.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.constraints.Positive;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,9 +21,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public void add(int id, Film film) {
-        if (film.getId() == 0) {
-            film.setId(++generator);
-        }
+        film.setId(++generator);
         films.put(film.getId(), film);
     }
 

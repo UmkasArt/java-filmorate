@@ -7,11 +7,10 @@ import ru.yandex.practicum.filmorate.controllers.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,28 +29,76 @@ public class UserService {
         return new ArrayList<>(inMemoryUserStorage.getUsers().values());
     }
 
-    public Map<Integer, User> getUsersMap() {
+    private Map<Integer, User> getUsersMap() {
         return inMemoryUserStorage.getUsers();
     }
 
     public User create(User user) {
-        isValidUser(user);
+        if (user.getId() != 0) {
+            throw new IllegalArgumentException();
+        }
+        validateUser(user);
         inMemoryUserStorage.add(user.getId(), user);
         return user;
+    }
+
+    public User findUserById(int id) {
+        if (!getUsersMap().containsKey(id)) {
+            throw new NoSuchElementException();
+        }
+        return getUsersMap().get(id);
+    }
+
+    public void addFriend(int id, int friendId) {
+        if (getUsersMap().get(id) == null || getUsersMap().get(friendId) == null) {
+            throw new NoSuchElementException();
+        }
+        getUsersMap().get(id).getFriendsSet().add(friendId);
+        getUsersMap().get(friendId).getFriendsSet().add(id);
+    }
+
+    public List<User> getUserFriend(int id) {
+        if (getUsersMap().get(id) == null) {
+            throw new NoSuchElementException();
+        }
+        return getUsersMap().get(id).getFriendsSet()
+                .stream()
+                .map(friendId -> getUsersMap().get(friendId))
+                .collect(Collectors.toList());
+    }
+
+    public List<User> getCommonFriends(int id, int otherId) {
+        List<User> commonFriends = new ArrayList<>();
+        for (Integer userId : getUsersMap().get(id).getFriendsSet()) {
+            for (Integer otherUserId : getUsersMap().get(otherId).getFriendsSet()) {
+                if (Objects.equals(userId, otherUserId)) {
+                    commonFriends.add(getUsersMap().get(userId));
+                }
+            }
+        }
+        return commonFriends;
+    }
+
+    public void deleteFriend(int id, int friendId) {
+        if (getUsersMap().get(id) == null || getUsersMap().get(friendId) == null) {
+            throw new NoSuchElementException();
+        }
+        getUsersMap().get(id).getFriendsSet().remove(friendId);
+        getUsersMap().get(friendId).getFriendsSet().remove(id);
     }
 
     public User put(User user) {
         if (!inMemoryUserStorage.getUsers().containsKey(user.getId())) {
             throw new NoSuchElementException();
         }
-        isValidUser(user);
+        validateUser(user);
         inMemoryUserStorage.put(user.getId(), user);
         return user;
     }
 
-    public void isValidUser(User user) {
+    public void validateUser(@NotNull User user) {
         if (user.getBirthday().isAfter(TODAY_DATE)) {
-            throw new ValidationException("Невалидная дата рождения");
+            throw new ValidationException("Invalid date of birth");
         }
     }
 }
