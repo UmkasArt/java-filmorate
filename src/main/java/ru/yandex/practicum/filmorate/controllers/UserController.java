@@ -2,14 +2,15 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.controllers.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -43,12 +44,15 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public User findById(@PathVariable int userId) {
+        if (!userService.getUsersMap().containsKey(userId)) {
+            throw new NoSuchElementException();
+        }
         return userService.getUsersMap().get(userId);
     }
 
     @PutMapping("{id}/friends/{friendId}")
     public void addFriend(@PathVariable int id, @PathVariable int friendId) {
-        if (userService.getUsersMap().get(id) == null  || userService.getUsersMap().get(friendId) == null) {
+        if (userService.getUsersMap().get(id) == null || userService.getUsersMap().get(friendId) == null) {
             throw new NoSuchElementException();
         }
         userService.getUsersMap().get(id).getFriendsSet().add(friendId);
@@ -57,7 +61,7 @@ public class UserController {
 
     @DeleteMapping("{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable int id, @PathVariable int friendId) {
-        if (userService.getUsersMap().get(id) == null  || userService.getUsersMap().get(friendId) == null) {
+        if (userService.getUsersMap().get(id) == null || userService.getUsersMap().get(friendId) == null) {
             throw new NoSuchElementException();
         }
         userService.getUsersMap().get(id).getFriendsSet().remove(friendId);
@@ -87,20 +91,4 @@ public class UserController {
         }
         return commonFriends;
     }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public void handleValidation(final ValidationException e) {
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public void handleNoElement(final NoSuchElementException e/*todo найти и справить на подходящее исключение*/) {
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public void handleServerError(final RuntimeException e/*todo найти и справить на подходящее исключение*/) {
-    }
-
 }

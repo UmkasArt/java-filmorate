@@ -20,7 +20,7 @@ class FilmControllerTest {
     void setUp() {
         film = new Film(1, "name",
                 "Desc",
-                LocalDate.of(2020, 8, 3), 100);
+                LocalDate.of(2020, 8, 3), 100, null);
         filmService = new FilmService(new InMemoryFilmStorage());
     }
 

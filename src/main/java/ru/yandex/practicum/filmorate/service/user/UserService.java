@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
@@ -40,6 +41,9 @@ public class UserService {
     }
 
     public User put(User user) {
+        if (!inMemoryUserStorage.getUsers().containsKey(user.getId())) {
+            throw new NoSuchElementException();
+        }
         isValidUser(user);
         inMemoryUserStorage.put(user.getId(), user);
         return user;

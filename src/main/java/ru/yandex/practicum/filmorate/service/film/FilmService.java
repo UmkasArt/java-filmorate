@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -42,6 +43,9 @@ public class FilmService {
     }
 
     public Film put(Film film) {
+        if (!inMemoryFilmStorage.getFilms().containsKey(film.getId())) {
+            throw new NoSuchElementException();
+        }
         isValidFilm(film);
         inMemoryFilmStorage.put(film.getId(), film);
         return film;

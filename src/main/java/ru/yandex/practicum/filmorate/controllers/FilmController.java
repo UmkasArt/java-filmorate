@@ -2,15 +2,15 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controllers.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -43,36 +43,34 @@ public class FilmController {
 
     @GetMapping("/{filmId}")
     public Film findById(@PathVariable int filmId) {
+        if (!filmService.getFilmsMap().containsKey(filmId)) {
+            throw new NoSuchElementException();
+        }
         return filmService.getFilmsMap().get(filmId);
     }
 
     @PutMapping("{id}/like/{userId}")
     public void putLike(@PathVariable int id, @PathVariable int userId) {
-        //todo добавить метод сервиса
+        if (!filmService.getFilmsMap().containsKey(id) || userId <= 0) {
+            throw new NoSuchElementException();
+        }
+        filmService.getFilmsMap().get(id).getLikesSet().add(userId);
     }
 
     @DeleteMapping("{id}/like/{userId}")
     public void deleteLike(@PathVariable int id, @PathVariable int userId) {
-        //todo добавить метод сервиса
+        if (!filmService.getFilmsMap().containsKey(id) || userId <= 0) {
+            throw new NoSuchElementException();
+        }
+        filmService.getFilmsMap().get(id).getLikesSet().remove(userId);
     }
 
     @GetMapping("/popular")
     public List<Film> getOrderFilms(@RequestParam(defaultValue = "10", required = false) Integer count) {
-        return List.of();//todo добавить метод сервиса
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public void handleValidation(final ValidationException e) {
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public void handleEx(final ValidationException e/*todo найти и справить на подходящее исключение*/) {
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public void handleEx1(final ValidationException e/*todo найти и справить на подходящее исключение*/) {
+        if (count <= 0) {
+            throw new ValidationException("Некорретный атрибут count");
+        }
+        return filmService.getAllFilms().stream().sorted((f0, f1) ->
+                f1.getLikesSet().size() - f0.getLikesSet().size()).limit(count).collect(Collectors.toList());
     }
 }
