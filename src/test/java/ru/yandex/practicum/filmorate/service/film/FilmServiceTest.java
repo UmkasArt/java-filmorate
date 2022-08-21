@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,7 +20,7 @@ class FilmServiceTest {
     void setUp() {
         film = new Film(1, "name",
                 "Desc",
-                LocalDate.of(2020, 8, 3), 100, null);
+                LocalDate.of(2020, 8, 3), 100);
         filmService = new FilmService(new InMemoryFilmStorage());
     }
 

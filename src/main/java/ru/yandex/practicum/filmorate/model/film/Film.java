@@ -15,19 +15,12 @@ import java.util.Set;
 @EqualsAndHashCode
 @AllArgsConstructor
 public class Film {
-    int id;
+    private int id;
     @NotNull
     @NotBlank
-    String name;
-    String description;
-    LocalDate releaseDate;
-    int duration;
-    Set<Integer> likes;
-
-    public Set<Integer> getLikesSet() {
-        if (this.likes == null) {
-            this.likes = new HashSet<>();
-        }
-        return this.likes;
-    }
+    private String name;
+    private String description;
+    private LocalDate releaseDate;
+    private int duration;
+    private final Set<Integer> likes = new HashSet<>();
 }

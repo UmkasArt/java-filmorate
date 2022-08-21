@@ -53,15 +53,15 @@ public class UserService {
         if (getUsersMap().get(id) == null || getUsersMap().get(friendId) == null) {
             throw new NoSuchElementException();
         }
-        getUsersMap().get(id).getFriendsSet().add(friendId);
-        getUsersMap().get(friendId).getFriendsSet().add(id);
+        getUsersMap().get(id).getFriends().add(friendId);
+        getUsersMap().get(friendId).getFriends().add(id);
     }
 
     public List<User> getUserFriend(int id) {
         if (getUsersMap().get(id) == null) {
             throw new NoSuchElementException();
         }
-        return getUsersMap().get(id).getFriendsSet()
+        return getUsersMap().get(id).getFriends()
                 .stream()
                 .map(friendId -> getUsersMap().get(friendId))
                 .collect(Collectors.toList());
@@ -69,8 +69,8 @@ public class UserService {
 
     public List<User> getCommonFriends(int id, int otherId) {
         List<User> commonFriends = new ArrayList<>();
-        for (Integer userId : getUsersMap().get(id).getFriendsSet()) {
-            for (Integer otherUserId : getUsersMap().get(otherId).getFriendsSet()) {
+        for (Integer userId : getUsersMap().get(id).getFriends()) {
+            for (Integer otherUserId : getUsersMap().get(otherId).getFriends()) {
                 if (Objects.equals(userId, otherUserId)) {
                     commonFriends.add(getUsersMap().get(userId));
                 }
@@ -83,8 +83,8 @@ public class UserService {
         if (getUsersMap().get(id) == null || getUsersMap().get(friendId) == null) {
             throw new NoSuchElementException();
         }
-        getUsersMap().get(id).getFriendsSet().remove(friendId);
-        getUsersMap().get(friendId).getFriendsSet().remove(id);
+        getUsersMap().get(id).getFriends().remove(friendId);
+        getUsersMap().get(friendId).getFriends().remove(id);
     }
 
     public User put(User user) {

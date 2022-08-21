@@ -15,22 +15,15 @@ import java.util.Set;
 @EqualsAndHashCode
 @AllArgsConstructor
 public class User {
-    int id;
+    private int id;
     @NotNull
     @NotBlank
-    String login;
-    String name;
+    private String login;
+    private String name;
     @NotNull
     @NotBlank
     @Email
-    String email;
-    LocalDate birthday;
-    Set<Integer> friends;
-
-    public Set<Integer> getFriendsSet() {
-        if (this.friends == null) {
-            this.friends = new HashSet<>();
-        }
-        return this.friends;
-    }
+    private String email;
+    private LocalDate birthday;
+    private final Set<Integer> friends = new HashSet<>();
 }

@@ -58,14 +58,14 @@ public class FilmService {
         if (!getFilmsMap().containsKey(id) || userId <= 0) {
             throw new NoSuchElementException();
         }
-        getFilmsMap().get(id).getLikesSet().add(userId);
+        getFilmsMap().get(id).getLikes().add(userId);
     }
 
     public void deleteLike(int id, int userId) {
         if (!getFilmsMap().containsKey(id) || userId <= 0) {
             throw new NoSuchElementException();
         }
-        getFilmsMap().get(id).getLikesSet().remove(userId);
+        getFilmsMap().get(id).getLikes().remove(userId);
     }
 
     public List<Film> getOrderFilm(int count) {
@@ -73,7 +73,7 @@ public class FilmService {
             throw new ValidationException("Некорретный атрибут count");
         }
         return getAllFilms().stream().sorted((f0, f1) ->
-                f1.getLikesSet().size() - f0.getLikesSet().size()).limit(count).collect(Collectors.toList());
+                f1.getLikes().size() - f0.getLikes().size()).limit(count).collect(Collectors.toList());
     }
 
     public Film put(@NotNull Film film) {
