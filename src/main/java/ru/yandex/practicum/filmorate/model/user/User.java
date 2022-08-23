@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.user;
 
 import lombok.*;
 
@@ -6,6 +6,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -13,14 +15,15 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @AllArgsConstructor
 public class User {
-    int id;
+    private int id;
     @NotNull
     @NotBlank
-    String login;
-    String name;
+    private String login;
+    private String name;
     @NotNull
     @NotBlank
     @Email
-    String email;
-    LocalDate birthday;
+    private String email;
+    private LocalDate birthday;
+    private final Set<Integer> friends = new HashSet<>();
 }
