@@ -1,3 +1,3 @@
 # java-filmorate
 
-Template repository for Filmorate project.
+ER-диаграмма модели данных изображена в файле QuickDBD-export.
