@@ -1,3 +1,5 @@
 # java-filmorate
 
-ER-диаграмма модели данных изображена в файле QuickDBD-export.
+
+Модель данных:
+![DB ER-diagram](src/main/resources/static/QuickDBD-Free Diagram.png)
