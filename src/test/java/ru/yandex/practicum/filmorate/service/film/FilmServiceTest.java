@@ -4,10 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controllers.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.mpa.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +19,7 @@ class FilmServiceTest {
     @BeforeEach
     void setUp() {
         film = new Film(1, "name",
-                "Desc",
-                LocalDate.of(2020, 8, 3), 100);
+                LocalDate.of(2020, 8, 3), "Desc", 100, 1, new Mpa(1, "G"));
         filmService = new FilmService(new InMemoryFilmStorage());
     }
 

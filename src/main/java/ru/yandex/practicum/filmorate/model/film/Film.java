@@ -2,12 +2,15 @@ package ru.yandex.practicum.filmorate.model.film;
 
 
 import lombok.*;
+import ru.yandex.practicum.filmorate.model.genre.Genre;
+import ru.yandex.practicum.filmorate.model.mpa.Mpa;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Getter
 @Setter
@@ -15,12 +18,14 @@ import java.util.Set;
 @EqualsAndHashCode
 @AllArgsConstructor
 public class Film {
-    private int id;
+    private Integer id;
     @NotNull
     @NotBlank
     private String name;
-    private String description;
     private LocalDate releaseDate;
-    private int duration;
-    private final Set<Integer> likes = new HashSet<>();
+    private String description;
+    private Integer duration;
+    private int rate;
+    private final Mpa mpa;
+    private final Set<Genre> genres = new TreeSet<>((o1, o2) -> o1.getId().compareTo(o2.getId()));
 }

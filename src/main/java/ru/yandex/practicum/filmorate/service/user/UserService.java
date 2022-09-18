@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controllers.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.user.User;
@@ -9,37 +10,39 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
 public class UserService {
-    private final UserStorage inMemoryUserStorage;
+    private final UserStorage userStorage;
 
     private static final LocalDate TODAY_DATE = LocalDate.now();
 
     @Autowired
-    public UserService(UserStorage inMemoryUserStorage) {
-        this.inMemoryUserStorage = inMemoryUserStorage;
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage) {
+        this.userStorage = userStorage;
     }
 
     public List<User> getAllUsers() {
-        log.debug("Текущее количество постов: {}", inMemoryUserStorage.getUsers().size());
-        return new ArrayList<>(inMemoryUserStorage.getUsers().values());
+        log.debug("Текущее количество постов: {}", userStorage.getUsersStorage().size());
+        return new ArrayList<>(userStorage.getUsersStorage().values());
     }
 
     private Map<Integer, User> getUsersMap() {
-        return inMemoryUserStorage.getUsers();
+        return userStorage.getUsersStorage();
     }
 
     public User create(User user) {
-        if (user.getId() != 0) {
+        if (user.getId() != null) {
             throw new IllegalArgumentException();
         }
         validateUser(user);
-        inMemoryUserStorage.add(user.getId(), user);
-        return user;
+        userStorage.add(user.getId(), user);
+        return getUsersMap().get(user.getId());
     }
 
     public User findUserById(int id) {
@@ -53,47 +56,34 @@ public class UserService {
         if (getUsersMap().get(id) == null || getUsersMap().get(friendId) == null) {
             throw new NoSuchElementException();
         }
-        getUsersMap().get(id).getFriends().add(friendId);
-        getUsersMap().get(friendId).getFriends().add(id);
+        userStorage.addFriend(id, friendId);
     }
 
     public List<User> getUserFriend(int id) {
         if (getUsersMap().get(id) == null) {
             throw new NoSuchElementException();
         }
-        return getUsersMap().get(id).getFriends()
-                .stream()
-                .map(friendId -> getUsersMap().get(friendId))
-                .collect(Collectors.toList());
+        return userStorage.getUserFriend(id);
     }
 
     public List<User> getCommonFriends(int id, int otherId) {
-        List<User> commonFriends = new ArrayList<>();
-        for (Integer userId : getUsersMap().get(id).getFriends()) {
-            for (Integer otherUserId : getUsersMap().get(otherId).getFriends()) {
-                if (Objects.equals(userId, otherUserId)) {
-                    commonFriends.add(getUsersMap().get(userId));
-                }
-            }
-        }
-        return commonFriends;
+        return userStorage.getCommonFriends(id, otherId);
     }
 
     public void deleteFriend(int id, int friendId) {
         if (getUsersMap().get(id) == null || getUsersMap().get(friendId) == null) {
             throw new NoSuchElementException();
         }
-        getUsersMap().get(id).getFriends().remove(friendId);
-        getUsersMap().get(friendId).getFriends().remove(id);
+        userStorage.deleteFriend(id, friendId);
     }
 
     public User put(User user) {
-        if (!inMemoryUserStorage.getUsers().containsKey(user.getId())) {
+        if (!userStorage.getUsersStorage().containsKey(user.getId())) {
             throw new NoSuchElementException();
         }
         validateUser(user);
-        inMemoryUserStorage.put(user.getId(), user);
-        return user;
+        userStorage.put(user.getId(), user);
+        return getUsersMap().get(user.getId());
     }
 
     public void validateUser(@NotNull User user) {

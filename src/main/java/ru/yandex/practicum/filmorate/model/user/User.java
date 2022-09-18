@@ -6,8 +6,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -15,7 +13,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @AllArgsConstructor
 public class User {
-    private int id;
+    private Integer id;
     @NotNull
     @NotBlank
     private String login;
@@ -25,5 +23,5 @@ public class User {
     @Email
     private String email;
     private LocalDate birthday;
-    private final Set<Integer> friends = new HashSet<>();
+    //private final Set<Integer> friends = new HashSet<>();
 }

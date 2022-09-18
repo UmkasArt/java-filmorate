@@ -29,27 +29,27 @@ public class FilmController {
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         log.debug("Фильм: {}", film);
-        return filmService.create(film);
+        return filmService.createFilm(film);
     }
 
     @PutMapping
     public Film put(@Valid @RequestBody Film film) {
         log.debug("Фильм: {}", film);
-        return filmService.put(film);
+        return filmService.putFilm(film);
     }
 
     @GetMapping("/{filmId}")
-    public Film findById(@PathVariable int filmId) {
+    public Film findById(@PathVariable Integer filmId) {
         return filmService.findFilmById(filmId);
     }
 
     @PutMapping("{id}/like/{userId}")
-    public void putLike(@PathVariable int id, @PathVariable int userId) {
+    public void putLike(@PathVariable Integer id, @PathVariable int userId) {
         filmService.putLike(id, userId);
     }
 
     @DeleteMapping("{id}/like/{userId}")
-    public void deleteLike(@PathVariable int id, @PathVariable int userId) {
+    public void deleteLike(@PathVariable Integer id, @PathVariable Integer userId) {
         filmService.deleteLike(id, userId);
     }
 
