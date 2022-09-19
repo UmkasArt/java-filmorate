@@ -23,5 +23,4 @@ public class User {
     @Email
     private String email;
     private LocalDate birthday;
-    //private final Set<Integer> friends = new HashSet<>();
 }

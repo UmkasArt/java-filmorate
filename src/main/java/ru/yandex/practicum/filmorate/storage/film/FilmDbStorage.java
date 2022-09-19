@@ -65,14 +65,7 @@ public class FilmDbStorage implements FilmStorage {
         if (mpaRows.next()) {
             film.getMpa().setName(mpaRows.getString("name").trim());
         }
-        for (Genre genre : film.getGenres()) {
-            jdbcTemplate.update("insert into film_category(film_id, category_id) values (?, ?)",
-                    film.getId(), genre.getId());
-            SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM CATEGORY where CATEGORY_ID = ?", genre.getId());
-            if (genreRows.next()) {
-                genre.setName(genreRows.getString("name"));
-            }
-        }
+        updateFilmsGenreName(film);
     }
 
     @Override
@@ -95,14 +88,8 @@ public class FilmDbStorage implements FilmStorage {
             film.getMpa().setName(mpaRows.getString("name").trim());
         }
         jdbcTemplate.update("delete from film_category where film_id = ?", film.getId());
-        for (Genre genre : film.getGenres()) {
-            jdbcTemplate.update("insert into film_category(film_id, category_id) values (?, ?)",
-                    film.getId(), genre.getId());
-            SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM CATEGORY where CATEGORY_ID = ?", genre.getId());
-            if (genreRows.next()) {
-                genre.setName(genreRows.getString("name"));
-            }
-        }
+
+        updateFilmsGenreName(film);
     }
 
     @Override
@@ -155,6 +142,17 @@ public class FilmDbStorage implements FilmStorage {
         jdbcTemplate.update("delete from likes where film_id = ? and user_id = ?",
                 filmId,
                 userId);
+    }
+
+    private void updateFilmsGenreName(Film film) {
+        List<Genre> genreList = jdbcTemplate.query("SELECT * FROM CATEGORY", new BeanPropertyRowMapper<>(Genre.class));
+        for (Genre filmGenre : film.getGenres()) {
+            jdbcTemplate.update("insert into film_category(film_id, category_id) values (?, ?)",
+                    film.getId(), filmGenre.getId());
+            genreList.stream()
+                    .filter(dictGenre -> dictGenre.getId() == filmGenre.getId())
+                    .forEach(dictGenre -> filmGenre.setName(dictGenre.getName()));
+        }
     }
 
     private void checkIdsForLikes(Integer filmId, Integer userId) {
