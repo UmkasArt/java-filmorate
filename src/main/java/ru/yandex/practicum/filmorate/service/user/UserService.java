@@ -12,8 +12,6 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
@@ -32,38 +30,30 @@ public class UserService {
         return new ArrayList<>(userStorage.getUsersStorage().values());
     }
 
-    private Map<Integer, User> getUsersMap() {
-        return userStorage.getUsersStorage();
-    }
-
     public User create(User user) {
         if (user.getId() != null) {
             throw new IllegalArgumentException();
         }
         validateUser(user);
         userStorage.add(user.getId(), user);
-        return getUsersMap().get(user.getId());
+        return userStorage.getUserById(user.getId());
     }
 
     public User findUserById(int id) {
-        if (!getUsersMap().containsKey(id)) {
-            throw new NoSuchElementException();
-        }
-        return getUsersMap().get(id);
+        return userStorage.getUserById(id);
     }
 
     public void addFriend(int id, int friendId) {
-        if (getUsersMap().get(id) == null || getUsersMap().get(friendId) == null) {
-            throw new NoSuchElementException();
+        if (userStorage.getUserById(id) != null | userStorage.getUserById(friendId) != null) {
+            userStorage.addFriend(id, friendId);
         }
-        userStorage.addFriend(id, friendId);
     }
 
     public List<User> getUserFriend(int id) {
-        if (getUsersMap().get(id) == null) {
-            throw new NoSuchElementException();
+        if (userStorage.getUserById(id) != null) {
+            return userStorage.getUserFriend(id);
         }
-        return userStorage.getUserFriend(id);
+        return new ArrayList<>();
     }
 
     public List<User> getCommonFriends(int id, int otherId) {
@@ -71,19 +61,15 @@ public class UserService {
     }
 
     public void deleteFriend(int id, int friendId) {
-        if (getUsersMap().get(id) == null || getUsersMap().get(friendId) == null) {
-            throw new NoSuchElementException();
+        if (userStorage.getUserById(id) != null || userStorage.getUserById(friendId) != null) {
+            userStorage.deleteFriend(id, friendId);
         }
-        userStorage.deleteFriend(id, friendId);
     }
 
     public User put(User user) {
-        if (!userStorage.getUsersStorage().containsKey(user.getId())) {
-            throw new NoSuchElementException();
-        }
         validateUser(user);
         userStorage.put(user.getId(), user);
-        return getUsersMap().get(user.getId());
+        return userStorage.getUserById(user.getId());
     }
 
     public void validateUser(@NotNull User user) {

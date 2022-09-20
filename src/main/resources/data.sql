@@ -80,9 +80,25 @@ select *
 from LIKES
 where FILM_ID = 1;
 
-SELECT FILMS.*, MPA.NAME AS MPA_NAME
-FROM FILMS
-         left join MPA on FILMS.MPA_ID = MPA.MPA_ID;
+
 
 select *
 from FILM_CATEGORY;*/
+
+/*
+SELECT FILMS.*, MPA.NAME AS MPA_NAME, c.CATEGORY_ID as GENRE_ID, c.NAME AS GENRE_NAME
+FROM FILMS
+         left join MPA on FILMS.MPA_ID = MPA.MPA_ID
+inner join FILM_CATEGORY FC on FILMS.ID = FC.FILM_ID
+inner join CATEGORY C on C.CATEGORY_ID = FC.CATEGORY_ID;*/
+
+
+
+select c.CATEGORY_ID as GENRE_ID, C.NAME AS GENRE_NAME
+from FILM_CATEGORY
+         inner join CATEGORY C on C.CATEGORY_ID = FILM_CATEGORY.CATEGORY_ID
+WHERE FILM_CATEGORY.FILM_ID = 2
+ORDER BY GENRE_ID;
+
+/*insert into FILM_CATEGORY (film_id, category_id) values (?, ?)*/
+

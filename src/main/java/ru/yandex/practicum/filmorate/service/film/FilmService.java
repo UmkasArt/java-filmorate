@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Service
@@ -34,35 +33,28 @@ public class FilmService {
         return new ArrayList<>(filmStorage.getFilmsStorage().values());
     }
 
-    private Map<Integer, Film> getFilmsMap() {
-        return filmStorage.getFilmsStorage();
-    }
-
     public Film createFilm(@NotNull Film film) {
         if (film.getId() != null) {
             throw new IllegalArgumentException();
         }
         validateFilm(film);
         filmStorage.addFilm(film.getId(), film);
-        return getFilmsMap().get(film.getId());
+        return filmStorage.getFilmById(film.getId());
     }
 
     public Film findFilmById(Integer filmId) {
-        if (!getFilmsMap().containsKey(filmId)) {
-            throw new NoSuchElementException();
-        }
-        return getFilmsMap().get(filmId);
+        return filmStorage.getFilmById(filmId);
     }
 
     public void putLike(Integer id, Integer userId) {
-        if (!getFilmsMap().containsKey(id) || userId <= 0) {
+        if (userId <= 0) {
             throw new NoSuchElementException();
         }
         filmStorage.putLike(id, userId);
     }
 
     public void deleteLike(Integer id, Integer userId) {
-        if (!getFilmsMap().containsKey(id) || userId <= 0) {
+        if (userId <= 0) {
             throw new NoSuchElementException();
         }
         filmStorage.deleteLike(id, userId);
@@ -76,12 +68,9 @@ public class FilmService {
     }
 
     public Film putFilm(@NotNull Film film) {
-        if (!filmStorage.getFilmsStorage().containsKey(film.getId())) {
-            throw new NoSuchElementException();
-        }
         validateFilm(film);
         filmStorage.putFilm(film.getId(), film);
-        return getFilmsMap().get(film.getId());
+        return filmStorage.getFilmById(film.getId());
     }
 
     public void validateFilm(@NotNull Film film) {

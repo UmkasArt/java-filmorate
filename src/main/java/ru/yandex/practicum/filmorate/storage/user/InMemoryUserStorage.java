@@ -19,6 +19,11 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
+    public User getUserById(Integer id) {
+        return usersStorage.get(id);
+    }
+
+    @Override
     public void add(Integer id, User user) {
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());

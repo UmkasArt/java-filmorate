@@ -3,13 +3,9 @@ package ru.yandex.practicum.filmorate.storage.user;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.controllers.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.user.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component("userDbStorage")
 public class UserDbStorage implements UserStorage {
@@ -40,6 +36,21 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
+    public User getUserById(Integer id) {
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("select * from users where ID = ?", id);
+        if (!userRows.next()) {
+            throw new NoSuchElementException();
+        }
+        User user = new User(
+                userRows.getInt("id"),
+                userRows.getString("login"),
+                userRows.getString("name"),
+                userRows.getString("email"),
+                userRows.getDate("birthday").toLocalDate());
+        return user;
+    }
+
+    @Override
     public void add(Integer id, User user) {
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());
@@ -57,7 +68,7 @@ public class UserDbStorage implements UserStorage {
     public void put(Integer id, User user) {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("select * from users where id = ?", user.getId());
         if (!userRows.next()) {
-            throw new ValidationException("Пользователь не найден");
+            throw new NoSuchElementException("Пользователь не найден");
         }
         jdbcTemplate.update("update users set login = ?, name = ?, email = ?, birthday = ? where id = ?",
                 user.getLogin(),

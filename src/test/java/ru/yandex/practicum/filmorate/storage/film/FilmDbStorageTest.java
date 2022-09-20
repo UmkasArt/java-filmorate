@@ -8,12 +8,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import ru.yandex.practicum.filmorate.controllers.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.mpa.Mpa;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -38,14 +38,14 @@ class FilmDbStorageTest {
     public void testFindFilmById() {
         jdbcTemplate.update("insert into FILMS(id, name, description, release_date, duration, rate, mpa_id) " +
                 "values (1, 'name', 'Desc', '2020-08-03', 100, 0, 1)");
-        Film filmTest = filmStorage.getFilmsStorage().get(1);
+        Film filmTest = filmStorage.getFilmById(1);
         assertEquals(film, filmTest);
     }
 
     @Test
     public void testAddFilm() {
         filmStorage.addFilm(film.getId(), film);
-        Film filmTest = filmStorage.getFilmsStorage().get(1);
+        Film filmTest = filmStorage.getFilmById(1);
         assertEquals(film, filmTest);
     }
 
@@ -54,7 +54,7 @@ class FilmDbStorageTest {
         filmStorage.addFilm(film.getId(), film);
         film.setName("loginTest");
         filmStorage.putFilm(film.getId(), film);
-        Film filmTest = filmStorage.getFilmsStorage().get(3);
+        Film filmTest = filmStorage.getFilmById(3);
         assertEquals(film, filmTest);
     }
 
@@ -63,7 +63,7 @@ class FilmDbStorageTest {
         filmStorage.addFilm(film.getId(), film);
         filmStorage.removeFilm(film.getId());
 
-        final ValidationException exception = assertThrows(ValidationException.class,
+        final NoSuchElementException exception = assertThrows(NoSuchElementException.class,
                 () -> filmStorage.putFilm(film.getId(), film));
         assertEquals("Фильм не найден", exception.getMessage());
     }

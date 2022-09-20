@@ -8,6 +8,8 @@ import java.util.Map;
 public interface FilmStorage {
     Map<Integer, Film> getFilmsStorage();
 
+    Film getFilmById(Integer id);
+
     void addFilm(Integer id, Film film);
 
     void putFilm(Integer id, Film film);
@@ -19,4 +21,6 @@ public interface FilmStorage {
     void putLike(Integer filmId, Integer userId);
 
     void deleteLike(Integer filmId, Integer userId);
+
+
 }

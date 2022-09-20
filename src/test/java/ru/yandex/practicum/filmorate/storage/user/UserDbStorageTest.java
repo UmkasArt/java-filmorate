@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.yandex.practicum.filmorate.controllers.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.user.User;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -35,14 +35,14 @@ class UserDbStorageTest {
     public void testFindUserById() {
         jdbcTemplate.update("insert into USERS(id, login, name, email, birthday) " +
                 "values (1, 'ololol@ya.ru', 'login', 'name', '2000-01-01')");
-        User userTest = userStorage.getUsersStorage().get(1);
+        User userTest = userStorage.getUserById(1);
         assertEquals(user, userTest);
     }
 
     @Test
     public void testAddUser() {
         userStorage.add(user.getId(), user);
-        User userTest = userStorage.getUsersStorage().get(1);
+        User userTest = userStorage.getUserById(1);
         assertEquals(user, userTest);
     }
 
@@ -51,7 +51,7 @@ class UserDbStorageTest {
         userStorage.add(user.getId(), user);
         user.setName("loginTest");
         userStorage.put(user.getId(), user);
-        User userTest = userStorage.getUsersStorage().get(2);
+        User userTest = userStorage.getUserById(2);
         assertEquals(user, userTest);
     }
 
@@ -60,7 +60,7 @@ class UserDbStorageTest {
         userStorage.add(user.getId(), user);
         userStorage.remove(user.getId());
 
-        final ValidationException exception = assertThrows(ValidationException.class,
+        final NoSuchElementException exception = assertThrows(NoSuchElementException.class,
                 () -> userStorage.put(user.getId(), user));
     }
 

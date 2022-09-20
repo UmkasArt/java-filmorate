@@ -9,6 +9,8 @@ public interface UserStorage {
 
     Map<Integer, User> getUsersStorage();
 
+    User getUserById(Integer id);
+
     void add(Integer id, User user);
 
     void put(Integer id, User user);
