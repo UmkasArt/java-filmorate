@@ -178,8 +178,3 @@ create table if not exists friends
     friend_id
 ) references USERS
     );
-
-/*drop table if exists film_category;
-drop table if exists likes;
-drop table if exists films;
-drop table if exists rating;*/
